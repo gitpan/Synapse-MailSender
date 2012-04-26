@@ -1,0 +1,5 @@
+Revision history for Perl extension Synapse::MailSender
+
+1.0	Thu Apr 26 15:35:55 MUT 2012
+	- original release
+	- wrote a bunch of tests

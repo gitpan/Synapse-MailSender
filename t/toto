@@ -1,0 +1,6 @@
+use Data::Dumper;
+use YAML::XS;
+
+open FP, "<example.yml";
+my $data = join '', <FP>;
+print Data::Dumper::Dumper (Load ($data));
