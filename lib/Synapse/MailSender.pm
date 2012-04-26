@@ -63,7 +63,8 @@ use YAML::XS;
 use warnings;
 use strict;
 
-our $VERSION = '1.0';
+our $VERSION = '1.1';
+
 
 =head2 $class->new();
 
@@ -368,6 +369,7 @@ above, you can send the corresponding email message using this method.
 sub send {
     my $self = shift;
     my $msg  = $self->message();
+    my $str  = $msg->as_string; # somehow this seems to fix a bug where by sometimes the message is empty...
     $msg->send_by_sendmail (
         Sendmail  => $self->{Sendmail},
         SetSender => $self->{SetSender} || $self->{From}->[0],
@@ -379,3 +381,22 @@ sub send {
 
 
 __END__
+
+=head1 EXPORTS
+
+none.
+
+
+=head1 BUGS
+
+Please report them to me. Patches always welcome...
+
+
+=head1 AUTHOR
+
+Jean-Michel Hiver, jhiver (at) synapse (dash) telecom (dot) com
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
