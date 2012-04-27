@@ -6,5 +6,4 @@ README
 t/00-base.t
 t/example.xml
 t/example.yml
-t/toto
 META.yml                                 Module meta-data (added by MakeMaker)

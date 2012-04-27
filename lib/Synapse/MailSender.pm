@@ -24,30 +24,29 @@ sending library as well as a templating library. It is based on L<MIME::Lite>
 to construct the mail and send it, and on L<Petal::Tiny> and
 L<XML::Parser::REX> to provide an XML email templating framework.
 
-This modules allows you to constructs emails which have.
+This modules allows you to constructs emails which have:
 
 =over 4
 
-=item an optional 'SetSender' attribute (set to 'From' by default)
+=item - an optional 'SetSender' attribute (set to 'From' by default)
 
-=item a 'From' attribute
+=item - a 'From' field
 
-=item a 'To' attribute
+=item - a 'To' field
 
-=item zero, one or more 'Cc' (carbon copy) fields
+=item - one or more optional 'Cc' (carbon copy) fields
 
-=item zero, one or more 'Bcc' (blind carbon copy) fields
+=item - one or more optional 'Bcc' (blind carbon copy) fields
 
-=item a Subject field
+=item - a subject field
 
-=item One or more paragraphs, which will make up for the email contents, which
+=item - One or more paragraphs, which will make up for the email contents, which
 is ALWAYS pure text. This module is designed for boring and dull email
-notifications - as email should be - not rich text or HTML or marketing
-nonsense.
+notifications.
 
-=item Zero or more file attachments, since it is useful for doing things like
-attaching PDF invoices, Excel spreadsheets with statistics, or cdr files in
-.CSV format for instance.
+=item - One or more optional file attachments, since it is useful for doing
+things like attaching PDF invoices, Excel spreadsheets with statistics, or cdr
+files in .CSV format for instance.
 
 =back
 
@@ -63,7 +62,7 @@ use YAML::XS;
 use warnings;
 use strict;
 
-our $VERSION = '1.1';
+our $VERSION = '1.3';
 
 
 =head2 $class->new();
@@ -231,7 +230,9 @@ arguments to the template:
 Say your code looks like this:
 
     my $sMailSender = Synapse::MailSender->new();
-    $sMailSender->loadxml ('/opt/templates/accountsuspended.xml', user => $user, accountDetailsFile => $user->accountFile());
+    $sMailSender->loadxml ( '/opt/templates/accountsuspended.xml',
+                            user => $user,
+                            accountDetailsFile => $user->accountFile() );
     $sMailSender->send();
 
 
@@ -245,10 +246,10 @@ Your template itself may look roughly like this:
       <Subject>Your account is over limit</Subject>
       <Say>Dear Customer,</Say>
       
-      <Say>Unfortunately, your account with a balance of <span petal:replace="user/balance">0.00</span> has reached its allowed limit.</Say>
-      <Say>Your services are being suspended for now. We kindly request that you post a payment with us so that your account reaches its allowed credit limit.</Say>
-      
-      <Say>We kindly request that you post a payment with us so that your account reaches its allowed credit limit.</Say>
+      <Say>Unfortunately, your account with a balance of <span petal:replace="user/balance">0.00</span>
+      has reached its allowed limit.</Say>
+      <Say>Your services are being suspended for now. We kindly request that you post a payment with us
+      so that your account reaches its allowed credit limit.</Say>
       <Say>Get in touch.
 Cheers
 Ourselves (example@example.com)</Say>
@@ -258,18 +259,21 @@ Ourselves (example@example.com)</Say>
 
 =head2 $self->loadxml ($path_to_xml_template, $yamlfile)
 
-Same as above, but passes a YAML file as options for template processing. The Dumped YAML is passed as 'yaml' in the template.
-option1 => $option1, option2 => $option2, etc)
+Same as above, but passes a YAML file as options for template processing. The
+Dumped YAML is passed as 'yaml' in the template.  option1 => $option1, option2
+=> $option2, etc)
 
 
 =head2 $self->loadxml ($xmldata, option1 => $option1, option2 => $option2, etc)
 
-Same as above, but instead of passing an XML Template name, the XML template data is passed directly.
+Same as above, but instead of passing an XML Template name, the XML template
+data is passed directly.
 
 
 =head2 $self->loadxml ($xmldata, $yamlfile)
 
-Spame as above, but instead of passing an XML Template name, the XML template data is passed directly.
+Spame as above, but instead of passing an XML Template name, the XML template
+data is passed directly.
 
 Plus, passes a YAML file as options for template processing. The Dumped YAML is
 passed as 'yaml' in the template.  option1 => $option1, option2 => $option2,
