@@ -11,6 +11,8 @@ BEGIN { use_ok('Synapse::MailSender') };
 no warnings;
 use strict;
 
+$Synapse::Logger::BASE_DIR = "./t/log";
+
 my $yaml = {
           'subject' => 'Subject@example.com',
           'user' => {

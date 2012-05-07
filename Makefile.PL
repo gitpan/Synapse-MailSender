@@ -6,10 +6,12 @@ WriteMakefile(
     NAME         => 'Synapse::MailSender',
     VERSION_FROM => './lib/Synapse/MailSender.pm',
     PREREQ_PM => { # we assume any reasonably not too-old version should work
-        "MIME::Lite"            => "0",
-        "MIME::Type::FileName"  => "0",
-        "XML::Parser::REX"      => "0",
-        "Petal::Tiny"           => "0",
-        "YAML::XS"              => "0",
+        "MIME::Lite"            => 3.0,
+        "MIME::Type::FileName"  => 1.0,
+        "XML::Parser::REX"      => 1.01,
+        "Petal::Tiny"           => 1.03,
+        "YAML::XS"              => 0.38,
+	"Synapse::Logger"	=> 0.1,
     },
+    EXE_FILES => [ './scripts/synapse-mailsender' ],
 );

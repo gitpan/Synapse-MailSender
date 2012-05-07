@@ -50,6 +50,30 @@ files in .CSV format for instance.
 
 =back
 
+=head1 A simple example:
+
+Say you have template.xml:
+
+    <xml>
+      <From petal:content="yaml/From">From</From>
+      <To petal:content="yaml/To">To</To>
+      <Subject petal:content="yaml/Subject">Subject</Subject>
+      <Say>Hello, World</Say>
+    </xml>
+
+And somedata.yaml
+
+    ---
+    From: foo@bar.net
+    To: baz@buz.com
+    Subject: foo bar baz buz
+
+You can use the provided script synapse-mailsender and type in the following
+command to have your email sent out:
+
+    synapse-mailsender ./template.xml ./somedata.yaml
+
+
 =head1 API 
 
 =cut
@@ -59,10 +83,11 @@ use MIME::Type::FileName;
 use XML::Parser::REX;
 use Petal::Tiny;
 use YAML::XS;
+use Synapse::Logger;
 use warnings;
 use strict;
 
-our $VERSION = '1.3';
+our $VERSION = '1.4';
 
 
 =head2 $class->new();
@@ -292,33 +317,43 @@ sub loadxml {
 
 sub _loadyaml {
     my $yamlfile = shift @_;
-    open YAML, "<$yamlfile" or die "Cannot read open $yamlfile";
+    open YAML, "<$yamlfile" or do {
+        logger ("cannot read open YAML file $yamlfile");
+        die "Cannot read open $yamlfile";
+    };
     my $data = join '', <YAML>;
     close YAML;
-    my ($yaml) = Load $data;
-    return $yaml;
+    my $res = eval {
+        my ($yaml) = Load $data;
+        $yaml;
+    };
+    $@ and logger($@);
+    return $res;
 }
 
 
 sub _loadxml {
     my $self    = shift;
     my $xmldata = shift;
-    my @tokens  = XML::Parser::REX::ShallowParse ($xmldata);
-    my $method  = 'None';
-    for (@tokens) {
-        /^\<SetSender\>/i and do { $method = 'SetSender';    next };
-        /^\<From\>/i      and do { $method = 'From';    next };
-        /^\<To\>/i        and do { $method = 'To';      next };
-        /^\<Cc\>/i        and do { $method = 'Cc';      next };
-        /^\<Bcc\>/i       and do { $method = 'Bcc';     next };
-        /^\<Subject\>/i   and do { $method = 'Subject'; next };
-        /^\<Body\>/i      and do { $method = 'Body';    next };
-        /^\<Say\>/i       and do { $method = 'Say';     next };
-        /^\<Para\>/i      and do { $method = 'Para';    next };
-        /^\<Attach\>/i    and do { $method = 'Attach';  next };
-        /^\</             and do { $method = 'None';    next };
-        $self->$method($_);
-    }
+    eval {
+        my @tokens  = XML::Parser::REX::ShallowParse ($xmldata);
+        my $method  = 'None';
+        for (@tokens) {
+            /^\<SetSender\>/i and do { $method = 'SetSender';    next };
+            /^\<From\>/i      and do { $method = 'From';    next };
+            /^\<To\>/i        and do { $method = 'To';      next };
+            /^\<Cc\>/i        and do { $method = 'Cc';      next };
+            /^\<Bcc\>/i       and do { $method = 'Bcc';     next };
+            /^\<Subject\>/i   and do { $method = 'Subject'; next };
+            /^\<Body\>/i      and do { $method = 'Body';    next };
+            /^\<Say\>/i       and do { $method = 'Say';     next };
+            /^\<Para\>/i      and do { $method = 'Para';    next };
+            /^\<Attach\>/i    and do { $method = 'Attach';  next };
+            /^\</             and do { $method = 'None';    next };
+            $self->$method($_);
+        }
+    };
+    $@ and logger($@);
 }
 
 

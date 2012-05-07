@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Synapse-MailSender
-version:            1.3
+version:            1.4
 abstract:           ~
 author:  []
 license:            unknown
@@ -10,11 +10,12 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
-    MIME::Lite:           0
-    MIME::Type::FileName:  0
-    Petal::Tiny:          0
-    XML::Parser::REX:     0
-    YAML::XS:             0
+    MIME::Lite:           3
+    MIME::Type::FileName:  1
+    Petal::Tiny:          1.03
+    Synapse::Logger:      0.1
+    XML::Parser::REX:     1.01
+    YAML::XS:             0.38
 no_index:
     directory:
         - t
